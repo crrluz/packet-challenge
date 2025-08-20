@@ -1,0 +1,29 @@
+
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    container_name: packet-db
+    environment:
+      POSTGRES_USER: packetuser
+      POSTGRES_PASSWORD: packetpass
+      POSTGRES_DB: packetdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  app:
+    build: ./app
+    container_name: packet-app
+    depends_on:
+      - db
+    environment:
+      INTERFACE: eth0
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: packetdb
+      DB_USER: packetuser
+      DB_PASSWORD: packetpass
+    network_mode: "host"
+volumes:
+  db_data:
